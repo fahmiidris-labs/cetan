@@ -1,0 +1,18 @@
+{
+    "import React": {
+        "prefix": "ir",
+        "body": ["import * as React from 'react';"]
+    },
+    "React.useEffect": {
+        "prefix": "uf",
+        "body": ["React.useEffect(() => {", "    $0", "}, []);"]
+    },
+    "Functional Component": {
+        "prefix": "fc",
+        "body": [
+            "export const ${1:ComponentName} = () => {",
+            "     return ($0);",
+            "};"
+        ]
+    }
+}
