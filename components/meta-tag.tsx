@@ -13,7 +13,7 @@ export const MetaTag = ({ description, pathname }: TMeta) => {
                 name="twitter:card"
                 content="summary_large_image"
             />
-            <meta key="twitter:site" name="twitter:site" content="@akusiap" />
+            <meta key="twitter:site" name="twitter:site" content="@cetan" />
             <meta
                 key="twitter:description"
                 name="twitter:description"
@@ -22,7 +22,7 @@ export const MetaTag = ({ description, pathname }: TMeta) => {
             <meta
                 key="twitter:image"
                 name="twitter:image"
-                content={`https://akusiap.com${socialCardLarge}`}
+                content={`https://cetan.com${socialCardLarge}`}
             />
             <meta
                 key="twitter:creator"
@@ -32,7 +32,7 @@ export const MetaTag = ({ description, pathname }: TMeta) => {
             <meta
                 key="og:url"
                 property="og:url"
-                content={`https://akusiap.com${pathname}`}
+                content={`https://cetan.com${pathname}`}
             />
             <meta key="og:type" property="og:type" content="article" />
             <meta
@@ -43,7 +43,7 @@ export const MetaTag = ({ description, pathname }: TMeta) => {
             <meta
                 key="og:image"
                 property="og:image"
-                content={`https://akusiap.com${socialCardLarge}`}
+                content={`https://cetan.com${socialCardLarge}`}
             />
         </>
     );

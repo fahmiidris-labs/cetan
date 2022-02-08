@@ -1,4 +1,3 @@
-import '@/assets/css/fonts.css';
 import '@/assets/css/main.css';
 
 import Head from 'next/head';
@@ -34,13 +33,11 @@ const MyApp = ({ Component, pageProps, router }: AppPropsWithLayout) => {
         : {};
     const meta = Component.layoutProps?.meta || {};
     const description =
-        meta.metaDescription ||
-        meta.description ||
-        'Website for Freelancers and Job Vacancies Information.';
+        meta.metaDescription || meta.description || 'Website for Chatting.';
 
     return (
         <>
-            <Title suffix="akusiap.com">{meta.metaTitle || meta.title}</Title>
+            <Title suffix="Cetan Web App">{meta.metaTitle || meta.title}</Title>
             <Head>
                 <MetaTag description={description} pathname={router.pathname} />
             </Head>

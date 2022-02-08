@@ -6,7 +6,7 @@ import NextDocument, {
     NextScript,
     DocumentInitialProps
 } from 'next/document';
-// import { Favicon } from '@/components/favicon';
+import { Favicon } from '@/components/favicon';
 
 export default class Document extends NextDocument {
     static async getInitialProps(ctx: DocumentContext) {
@@ -22,7 +22,7 @@ export default class Document extends NextDocument {
                 className={`[--scroll-mt:9.875rem] lg:[--scroll-mt:6.3125rem]`}
             >
                 <Head>
-                    {/* <Favicon /> */}
+                    <Favicon />
                     <link
                         href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
                         rel="stylesheet"
