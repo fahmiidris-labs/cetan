@@ -6,11 +6,13 @@ import { HiChevronDown, HiDotsHorizontal, HiSearch } from 'react-icons/hi';
 import { Dropdown } from '../molecules/dropdown';
 import { useWithWhoZustand } from '@/zustand/with-who';
 import { Link } from '../atoms/link';
+import { TRoom } from '@/types/auth.type';
 
-export const Navbar = () => {
+export const Navbar = ({ room }: { room: TRoom[] }) => {
     const router = useRouter();
     const { user, setUser } = useAuthZustand();
     const withWho = useWithWhoZustand();
+    const [unRead, setUnRead] = React.useState<number>(0);
 
     React.useEffect(() => {
         const token = Cookies.get('token');
@@ -22,6 +24,21 @@ export const Navbar = () => {
             });
         }
     }, [setUser]);
+
+    React.useEffect(() => {
+        let counter: number = 0;
+        room.map((item, i) => {
+            const result = item.messages.filter(
+                data => data.to === item.self.id && data.seen === false
+            ).length;
+            if (result > 0) {
+                counter += result;
+            }
+        });
+        setUnRead(counter);
+    }, [room]);
+
+    console.info(unRead);
 
     const handleLogout = async () => {
         Cookies.remove('token');
@@ -39,7 +56,7 @@ export const Navbar = () => {
                                 Cetan Message
                             </h1>
                             <p className="text-xs text-gray-400">
-                                1 unread message
+                                {unRead} unread message
                             </p>
                         </div>
                         <div className="">

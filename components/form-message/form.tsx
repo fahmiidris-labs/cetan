@@ -15,6 +15,7 @@ type TMessage = {
     from: number;
     to: number;
     message: string;
+    seen: boolean;
     created_at: string;
 };
 
