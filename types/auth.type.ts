@@ -51,6 +51,7 @@ export type TRoom = {
         id: number;
         message: string;
         to: number;
+        seen: boolean;
     }[];
     created_at: string;
 };

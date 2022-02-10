@@ -14,6 +14,7 @@ type TMessage = {
     to: number;
     message: string;
     created_at: string;
+    seen: boolean;
 };
 
 type TPerson = {
@@ -38,7 +39,7 @@ const ChattingPage: NextPageWithLayout = () => {
     const { setUser } = useWithWhoZustand();
     const { query, replace } = useRouter();
     const { room_id } = query;
-
+    const [id, setId] = React.useState<string | number>(0);
     const [data, setData] = React.useState<TData>({
         messages: [],
         self: null,
@@ -82,6 +83,30 @@ const ChattingPage: NextPageWithLayout = () => {
     }, [data.messages]);
 
     React.useEffect(() => {
+        const fetchAgain = async () => {
+            try {
+                const { data } = await api.get(
+                    `/room/${room_id}`,
+                    {
+                        headers: {
+                            Authorization:
+                                'Bearer ' +
+                                Cookies.get('token')
+                        }
+                    }
+                );
+                setData(data.data);
+                setUser({ name: data.data.opponent.name });
+            } catch (error) {
+                if (error instanceof Error) {
+                    console.log('Fetch');
+                }
+            }
+        };
+        fetchAgain();
+    }, [id, room_id, setUser]);
+
+    React.useEffect(() => {
         if (typeof window !== 'undefined') {
             window.Echo.channel('Cetan-app').listen(
                 '.message-notification',
@@ -90,27 +115,7 @@ const ChattingPage: NextPageWithLayout = () => {
                         // console.log('socket received', e);
                         // console.log(e.to, data.self?.id);
                         if (e.to === data.self?.id && e.room === data.room_id) {
-                            const fetchAgain = async () => {
-                                try {
-                                    const { data } = await api.get(
-                                        `/room/${room_id}`,
-                                        {
-                                            headers: {
-                                                Authorization:
-                                                    'Bearer ' +
-                                                    Cookies.get('token')
-                                            }
-                                        }
-                                    );
-                                    setData(data.data);
-                                    setUser({ name: data.data.opponent.name });
-                                } catch (error) {
-                                    if (error instanceof Error) {
-                                        console.log('Fetch');
-                                    }
-                                }
-                            };
-                            fetchAgain();
+                            setId(e.id);
                         }
                     }
                 }
@@ -143,6 +148,13 @@ const ChattingPage: NextPageWithLayout = () => {
                                 )}
                             >
                                 {message.message}
+                            </div>
+                            <div className='px-1 pt-4 text-green-600'>
+                                {message.from === data.self?.id ?
+                                    message.seen === true ? '✓✓' : '✓'
+                                    :
+                                    ''
+                                }
                             </div>
                         </div>
                     </div>
