@@ -7,6 +7,7 @@ import Cookies from 'js-cookie';
 import { classNames } from '@/utils/helpers';
 import { useWithWhoZustand } from '@/zustand/with-who';
 import { FormChat } from '@/components/form-message/form';
+import { IoCheckmarkDoneOutline, IoCheckmarkOutline } from 'react-icons/io5';
 
 type TMessage = {
     id: number;
@@ -14,6 +15,7 @@ type TMessage = {
     to: number;
     message: string;
     created_at: string;
+    seen: boolean;
 };
 
 type TPerson = {
@@ -38,7 +40,7 @@ const ChattingPage: NextPageWithLayout = () => {
     const { setUser } = useWithWhoZustand();
     const { query, replace } = useRouter();
     const { room_id } = query;
-
+    const [id, setId] = React.useState<string | number>(0);
     const [data, setData] = React.useState<TData>({
         messages: [],
         self: null,
@@ -46,26 +48,26 @@ const ChattingPage: NextPageWithLayout = () => {
         room_id: ''
     });
 
-    React.useEffect(() => {
-        if (room_id !== undefined) {
-            const fetch = async () => {
-                try {
-                    const { data } = await api.get(`/room/${room_id}`, {
-                        headers: {
-                            Authorization: 'Bearer ' + Cookies.get('token')
-                        }
-                    });
-                    setData(data.data);
-                    setUser({ name: data.data.opponent.name });
-                } catch (error) {
-                    if (error instanceof Error) {
-                        replace('/chat');
-                    }
-                }
-            };
-            fetch();
-        }
-    }, [room_id, replace, setUser]);
+    // React.useEffect(() => {
+    //     if (room_id !== undefined) {
+    //         const fetch = async () => {
+    //             try {
+    //                 const { data } = await api.get(`/room/${room_id}`, {
+    //                     headers: {
+    //                         Authorization: 'Bearer ' + Cookies.get('token')
+    //                     }
+    //                 });
+    //                 setData(data.data);
+    //                 setUser({ name: data.data.opponent.name });
+    //             } catch (error) {
+    //                 if (error instanceof Error) {
+    //                     replace('/chat');
+    //                 }
+    //             }
+    //         };
+    //         fetch();
+    //     }
+    // }, [room_id, replace, setUser]);
 
     const onHandleNewMessage = (newMessage: TMessage) => {
         setData(state => ({
@@ -82,6 +84,27 @@ const ChattingPage: NextPageWithLayout = () => {
     }, [data.messages]);
 
     React.useEffect(() => {
+        if (id || room_id) {
+            const fetchAgain = async () => {
+                try {
+                    const { data } = await api.get(`/room/${room_id}`, {
+                        headers: {
+                            Authorization: 'Bearer ' + Cookies.get('token')
+                        }
+                    });
+                    setData(data.data);
+                    setUser({ name: data.data.opponent.name });
+                } catch (error) {
+                    if (error instanceof Error) {
+                        replace('/chat');
+                    }
+                }
+            };
+            fetchAgain();
+        }
+    }, [id, room_id, setUser, replace]);
+
+    React.useEffect(() => {
         if (typeof window !== 'undefined') {
             window.Echo.channel('Cetan-app').listen(
                 '.message-notification',
@@ -90,27 +113,7 @@ const ChattingPage: NextPageWithLayout = () => {
                         // console.log('socket received', e);
                         // console.log(e.to, data.self?.id);
                         if (e.to === data.self?.id && e.room === data.room_id) {
-                            const fetchAgain = async () => {
-                                try {
-                                    const { data } = await api.get(
-                                        `/room/${room_id}`,
-                                        {
-                                            headers: {
-                                                Authorization:
-                                                    'Bearer ' +
-                                                    Cookies.get('token')
-                                            }
-                                        }
-                                    );
-                                    setData(data.data);
-                                    setUser({ name: data.data.opponent.name });
-                                } catch (error) {
-                                    if (error instanceof Error) {
-                                        console.log('Fetch');
-                                    }
-                                }
-                            };
-                            fetchAgain();
+                            setId(e.id);
                         }
                     }
                 }
@@ -136,13 +139,22 @@ const ChattingPage: NextPageWithLayout = () => {
                         >
                             <div
                                 className={classNames(
-                                    'rounded-lg px-4 py-2',
+                                    'relative inline-flex items-center rounded-lg py-2 pl-4 pr-8 text-sm',
                                     message.from !== data.self?.id
                                         ? 'bg-gray-100'
                                         : 'bg-rose-200'
                                 )}
                             >
                                 {message.message}
+                                <div className="absolute right-2 bottom-2">
+                                    {message.from === data.self?.id ? (
+                                        message.seen === true ? (
+                                            <IoCheckmarkDoneOutline className="h-3 w-3 text-cyan-400" />
+                                        ) : (
+                                            <IoCheckmarkOutline className="h-3 w-3 text-gray-400" />
+                                        )
+                                    ) : null}
+                                </div>
                             </div>
                         </div>
                     </div>
