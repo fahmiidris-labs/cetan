@@ -1,17 +1,14 @@
+import * as React from 'react';
 import type { NextPageWithLayout } from '@/types/app.type';
 
-const Home: NextPageWithLayout = () => {
-    return (
-        <div className="flex min-h-screen items-center justify-center">
-            <h1>Hello Next.js</h1>
-        </div>
-    );
+const HomePage: NextPageWithLayout = () => {
+    return <div>Home Page</div>;
 };
 
-Home.layoutProps = {
+HomePage.layoutProps = {
     meta: {
-        title: 'Sign In'
+        title: 'Home'
     }
 };
 
-export default Home;
+export default HomePage;

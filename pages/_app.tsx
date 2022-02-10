@@ -1,16 +1,17 @@
 import '@/assets/css/main.css';
 
+import * as React from 'react';
 import Head from 'next/head';
 import Router from 'next/router';
 import ProgressBar from '@badrap/bar-of-progress';
 import { Title } from '@/components/title';
+import { MetaTag } from '@/components/meta-tag';
 import { RootLayout } from '@/components/templates/root-layout';
 import type { AppPropsWithLayout } from '@/types/app.type';
-import { MetaTag } from '@/components/meta-tag';
 
 const progress = new ProgressBar({
     size: 2,
-    color: '#22d3ee',
+    color: '#f43f5e',
     className: 'bar-of-progress',
     delay: 100
 });
@@ -41,11 +42,9 @@ const MyApp = ({ Component, pageProps, router }: AppPropsWithLayout) => {
             <Head>
                 <MetaTag description={description} pathname={router.pathname} />
             </Head>
-            {/* <AuthProvider> */}
             <Layout {...layoutProps}>
                 <Component {...pageProps} />
             </Layout>
-            {/* </AuthProvider> */}
         </>
     );
 };

@@ -9,12 +9,12 @@ module.exports = {
     theme: {
         extend: {
             fontFamily: {
-                sans: ['Poppins', ...defaultTheme.fontFamily.sans]
+                sans: ['Roboto', ...defaultTheme.fontFamily.sans]
             },
             container: {
                 center: true
             }
         }
     },
-    plugins: []
+    plugins: [require('@tailwindcss/forms')]
 };

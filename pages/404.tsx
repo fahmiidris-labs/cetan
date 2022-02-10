@@ -5,7 +5,7 @@ import { LogoType } from '@/components/atoms/logo';
 
 import type { NextPageWithLayout } from '@/types/app.type';
 
-const Custom404: NextPageWithLayout = () => {
+const Custom404Page: NextPageWithLayout = () => {
     return (
         <div className="flex h-screen items-center justify-center">
             <div className="w-full max-w-lg space-y-4 p-4 md:p-10">
@@ -34,10 +34,10 @@ const Custom404: NextPageWithLayout = () => {
     );
 };
 
-Custom404.layoutProps = {
+Custom404Page.layoutProps = {
     meta: {
         title: '404 Page Not Found!'
     }
 };
 
-export default Custom404;
+export default Custom404Page;

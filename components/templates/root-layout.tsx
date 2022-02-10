@@ -1,4 +1,4 @@
-import { TLayout } from '@/types/app.type';
+import type { TLayout } from '@/types/app.type';
 
 export const RootLayout = ({ children }: TLayout) => {
     console.log('Root Layout');

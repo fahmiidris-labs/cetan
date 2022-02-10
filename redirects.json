@@ -1,1 +1,7 @@
-[]
+[
+    {
+        "source": "/",
+        "destination": "/login",
+        "permanent": true
+    }
+]
