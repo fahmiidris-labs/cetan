@@ -8,7 +8,6 @@ import api from '@/libs/axios';
 import Cookies from 'js-cookie';
 import { classNames } from '@/utils/helpers';
 import { useRouter } from 'next/router';
-import { useChatZustand } from '@/zustand/chat';
 
 export const ChatLayout = ({ children }: TLayout) => {
     console.log('Chat Layout');
@@ -16,21 +15,72 @@ export const ChatLayout = ({ children }: TLayout) => {
     const { query } = useRouter();
     const { room_id } = query;
 
-    const [room, setRoom] = React.useState<TRoom[]>([]);
+    const [room, setRoom] = React.useState<TRoom[]>([] as TRoom[]);
+    console.log(room);
 
     React.useEffect(() => {
         if (room.length < 1) {
             const fetch = async () => {
-                const { data } = await api.get<TRoom[]>('/room', {
-                    headers: {
-                        Authorization: 'Bearer ' + Cookies.get('token')
+                try {
+                    const { data } = await api.get<TRoom[]>('/room', {
+                        headers: {
+                            Authorization: 'Bearer ' + Cookies.get('token')
+                        }
+                    });
+                    setRoom(data);
+                } catch (error) {
+                    if (error instanceof Error) {
+                        console.info(error.message);
                     }
-                });
-                setRoom(data);
+                }
             };
             fetch();
         }
     }, [room]);
+
+    React.useEffect(() => {
+        if (typeof window !== 'undefined') {
+            window.Echo.channel('Cetan-app').listen(
+                '.message-notification',
+                (e: any) => {
+                    if (e && e != undefined) {
+                        console.log('socket received', e);
+                        if (room.length > 0) {
+                            console.log(room.length > 0);
+                            console.log(room[0].self.id);
+                            console.log(e.room, room_id);
+                            if (
+                                e.to === room[0].self.id ||
+                                e.room === Number(room_id)
+                            ) {
+                                const fetch = async () => {
+                                    try {
+                                        const { data } = await api.get<TRoom[]>(
+                                            '/room',
+                                            {
+                                                headers: {
+                                                    Authorization:
+                                                        'Bearer ' +
+                                                        Cookies.get('token')
+                                                }
+                                            }
+                                        );
+                                        console.log(data);
+                                        setRoom(data);
+                                    } catch (error) {
+                                        if (error instanceof Error) {
+                                            console.info(error.message);
+                                        }
+                                    }
+                                };
+                                fetch();
+                            }
+                        }
+                    }
+                }
+            );
+        }
+    }, [room, room_id]);
 
     return (
         <div className="container relative max-h-screen">
@@ -77,12 +127,16 @@ export const ChatLayout = ({ children }: TLayout) => {
                                             </h2>
                                             <div className="text-[10px] text-gray-400">
                                                 {item.messages.length > 0 &&
-                                                    item.messages[0].created_at}
+                                                    item.messages[
+                                                        item.messages.length - 1
+                                                    ].created_at}
                                             </div>
                                         </div>
                                         <p className="truncate text-xs text-gray-400">
                                             {item.messages.length > 0 &&
-                                                item.messages[0].message}
+                                                item.messages[
+                                                    item.messages.length - 1
+                                                ].message}
                                         </p>
                                     </div>
                                 </Link>
@@ -91,7 +145,7 @@ export const ChatLayout = ({ children }: TLayout) => {
                     </div>
                 </aside>
                 <main className="col-span-2 flex h-screen flex-col overflow-auto border-l border-gray-100">
-                    <div className="h-full pt-20">{children}</div>
+                    <div className="h-full pt-16">{children}</div>
                 </main>
             </div>
         </div>

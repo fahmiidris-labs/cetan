@@ -15,7 +15,21 @@ export type TLoginResponseSuccess = {
 
 export type TRoom = {
     room_id: number;
-    self: {};
+    self: {
+        bio: string;
+        created_at: string;
+        email: string;
+        email_verified_at: string | null;
+        id: number;
+        images: {
+            created_at: string;
+            id: number;
+            image_url: string;
+            primary: boolean;
+        }[];
+        name: string;
+        token: string | null;
+    };
     opponent: {
         bio: string;
         created_at: string;

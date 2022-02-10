@@ -1,5 +1,7 @@
 import '@/assets/css/main.css';
 
+import '@/libs/realtime';
+
 import * as React from 'react';
 import Head from 'next/head';
 import Router from 'next/router';

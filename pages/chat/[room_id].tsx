@@ -74,34 +74,80 @@ const ChattingPage: NextPageWithLayout = () => {
         }));
     };
 
+    React.useEffect(() => {
+        let scroll = document.getElementById('scroll');
+        if (scroll) {
+            scroll.scrollTop = scroll.scrollHeight;
+        }
+    }, [data.messages]);
+
+    React.useEffect(() => {
+        if (typeof window !== 'undefined') {
+            window.Echo.channel('Cetan-app').listen(
+                '.message-notification',
+                (e: any) => {
+                    if (e && e != undefined) {
+                        // console.log('socket received', e);
+                        // console.log(e.to, data.self?.id);
+                        if (e.to === data.self?.id && e.room === data.room_id) {
+                            const fetchAgain = async () => {
+                                try {
+                                    const { data } = await api.get(
+                                        `/room/${room_id}`,
+                                        {
+                                            headers: {
+                                                Authorization:
+                                                    'Bearer ' +
+                                                    Cookies.get('token')
+                                            }
+                                        }
+                                    );
+                                    setData(data.data);
+                                    setUser({ name: data.data.opponent.name });
+                                } catch (error) {
+                                    if (error instanceof Error) {
+                                        console.log('Fetch');
+                                    }
+                                }
+                            };
+                            fetchAgain();
+                        }
+                    }
+                }
+            );
+        }
+    }, [data.room_id, data.self?.id, room_id, setUser]);
+
     return (
         <div className="flex h-full flex-col justify-end space-y-2">
-            {data.messages.map((message, i) => (
-                <div
-                    key={i}
-                    className="flex w-full flex-col items-start px-4 pb-2"
-                >
+            <div className="scroll overflow-y-auto" id="scroll">
+                {data.messages.map((message, i) => (
                     <div
-                        className={classNames(
-                            'flex w-full',
-                            message.from !== data.self?.id
-                                ? 'items-start justify-start'
-                                : 'items-end justify-end'
-                        )}
+                        key={i}
+                        className="flex w-full flex-col items-start px-4 pb-2 first:pt-3"
                     >
                         <div
                             className={classNames(
-                                'rounded-lg px-4 py-2',
+                                'flex w-full',
                                 message.from !== data.self?.id
-                                    ? 'bg-gray-100'
-                                    : 'bg-rose-200'
+                                    ? 'items-start justify-start'
+                                    : 'items-end justify-end'
                             )}
                         >
-                            {message.message}
+                            <div
+                                className={classNames(
+                                    'rounded-lg px-4 py-2',
+                                    message.from !== data.self?.id
+                                        ? 'bg-gray-100'
+                                        : 'bg-rose-200'
+                                )}
+                            >
+                                {message.message}
+                            </div>
                         </div>
                     </div>
-                </div>
-            ))}
+                ))}
+            </div>
             <div className="border-t border-gray-100 py-3 px-4">
                 <FormChat
                     room_id={data.room_id}

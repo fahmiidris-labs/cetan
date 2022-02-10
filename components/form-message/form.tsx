@@ -2,6 +2,7 @@ import api from '@/libs/axios';
 import Cookies from 'js-cookie';
 import * as React from 'react';
 import { MdOutlineAttachFile, MdOutlineSend } from 'react-icons/md';
+import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 import { Input } from '../atoms/input';
 
 type TNewMessage = {
@@ -29,6 +30,8 @@ export const FormChat = ({
         message: ''
     });
 
+    const [loading, setLoading] = React.useState<boolean>(false);
+
     const onChangeHandle = async (
         event: React.ChangeEvent<HTMLInputElement>
     ) => {
@@ -49,6 +52,7 @@ export const FormChat = ({
 
     const onHandleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
+        setLoading(true);
         try {
             const { data } = await api.post('/message', newMessage, {
                 headers: {
@@ -60,9 +64,11 @@ export const FormChat = ({
                 ...state,
                 message: ''
             }));
+            setLoading(false);
         } catch (error) {
             if (error instanceof Error) {
                 console.info(error.message);
+                setLoading(false);
             }
         }
     };
@@ -88,8 +94,13 @@ export const FormChat = ({
             <button
                 type="submit"
                 className="inline-flex items-center justify-center rounded-lg border border-transparent p-2 duration-200 ease-in-out hover:bg-rose-200"
+                disabled={loading}
             >
-                <MdOutlineSend className="h-5 w-5" />
+                {loading ? (
+                    <AiOutlineLoading3Quarters className="h-5 w-5 animate-spin" />
+                ) : (
+                    <MdOutlineSend className="h-5 w-5" />
+                )}
             </button>
         </form>
     );
