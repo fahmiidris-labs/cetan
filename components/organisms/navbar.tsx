@@ -4,13 +4,13 @@ import Cookies from 'js-cookie';
 import { useRouter } from 'next/router';
 import { HiChevronDown, HiDotsHorizontal, HiSearch } from 'react-icons/hi';
 import { Dropdown } from '../molecules/dropdown';
-import { useChatZustand } from '@/zustand/chat';
+import { useWithWhoZustand } from '@/zustand/with-who';
 import { Link } from '../atoms/link';
 
 export const Navbar = () => {
     const router = useRouter();
     const { user, setUser } = useAuthZustand();
-    const { chat } = useChatZustand();
+    const withWho = useWithWhoZustand();
 
     React.useEffect(() => {
         const token = Cookies.get('token');
@@ -77,7 +77,7 @@ export const Navbar = () => {
                     </div>
                     <div className="col-span-2 flex items-center justify-between pr-4">
                         <Link href={'/'} className="pl-6 text-sm font-semibold">
-                            {chat?.name.replace(
+                            {withWho.user?.name.replace(
                                 /(\w)(\w*)/g,
                                 function (g0, g1, g2) {
                                     return g1.toUpperCase() + g2.toLowerCase();
