@@ -18,24 +18,22 @@ export const ChatLayout = ({ children }: TLayout) => {
     const [room, setRoom] = React.useState<TRoom[]>([] as TRoom[]);
 
     React.useEffect(() => {
-        if (room.length < 1) {
-            const fetch = async () => {
-                try {
-                    const { data } = await api.get<TRoom[]>('/room', {
-                        headers: {
-                            Authorization: 'Bearer ' + Cookies.get('token')
-                        }
-                    });
-                    setRoom(data);
-                } catch (error) {
-                    if (error instanceof Error) {
-                        console.info(error.message);
+        const fetch = async () => {
+            try {
+                const { data } = await api.get<TRoom[]>('/room', {
+                    headers: {
+                        Authorization: 'Bearer ' + Cookies.get('token')
                     }
+                });
+                setRoom(data);
+            } catch (error) {
+                if (error instanceof Error) {
+                    console.info(error.message);
                 }
-            };
-            fetch();
-        }
-    }, [room]);
+            }
+        };
+        fetch();
+    }, []);
 
     React.useEffect(() => {
         if (id) {
