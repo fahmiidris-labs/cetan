@@ -13,6 +13,23 @@ export type TLoginResponseSuccess = {
     created_at: string;
 };
 
+export type TRegisterInitialState = {
+    name: string;
+    email: string;
+    password: string;
+    password_confirmation: string;
+    agree: boolean;
+};
+
+export type TRegisterResponseSuccess = {
+    id: number;
+    name: string;
+    email: string;
+    email_verified_at: string | null;
+    token: string;
+    created_at: string;
+};
+
 export type TRoom = {
     room_id: number;
     self: {
